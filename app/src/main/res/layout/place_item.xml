@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+    app:cardCornerRadius="20dp"
+    android:backgroundTint="@color/green"
+    android:layout_margin="10dp"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/placeNameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="serif"
+        android:layout_margin="30dp"
+        android:text="New Delhi"
+        android:textColor="@color/black"
+        android:textSize="32sp" />
+    <TextView
+        android:id="@+id/tempTv"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="30dp"
+        android:textSize="30sp"
+        android:text="30°C"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>
+</LinearLayout>

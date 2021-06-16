@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activities.DetailsFragment">
+
+    <TextView
+        android:id="@+id/placeTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/hind_medium"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:text="New Delhi"
+        android:textSize="40sp" />
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="170dp"
+        android:layout_below="@+id/placeTv"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="110dp" />
+
+    <TextView
+        android:id="@+id/tempraturemainScreenTv"
+        android:layout_above="@+id/hourlyforecastcard"
+        android:text="33°C"
+        android:textSize="70sp"
+        android:layout_width="wrap_content"
+        android:layout_margin="25dp"
+        android:layout_height="wrap_content"/>
+
+<com.google.android.material.card.MaterialCardView
+    android:id="@+id/hourlyforecastcard"
+    android:layout_above="@+id/dailyforecastcard"
+    android:layout_width="match_parent"
+    app:cardCornerRadius="35dp"
+    android:layout_margin="10dp"
+    android:backgroundTint="@color/green"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text="  HOURLY FORECAST"
+        android:textSize="30sp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="46dp"
+        android:id="@+id/detailsRvHourly"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="100dp"
+        android:scrollbars="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/daily_temp" />
+</com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/dailyforecastcard"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        app:cardCornerRadius="35dp"
+        android:backgroundTint="@color/green"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="  DAILY FORECAST"
+            android:textSize="30sp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="46dp"
+            android:id="@+id/detailsRvDaily"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="100dp"
+            android:scrollbars="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/daily_temp" />
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>
