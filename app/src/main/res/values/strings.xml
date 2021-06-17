@@ -2,4 +2,8 @@
     <string name="app_name">Weather</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="location_required">Location permission required</string>
+    <string name="access_to_gps">For search by GPS, please allow access to Location</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
 </resources>
