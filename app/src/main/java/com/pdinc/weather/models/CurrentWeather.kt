@@ -1,5 +1,7 @@
 package com.pdinc.weather.models
 
+import com.google.gson.annotations.SerializedName
+
 data class CurrentWeather(
 	val dt: Int? = null,
 	val coord: Coord? = null,
@@ -12,14 +14,15 @@ data class CurrentWeather(
 	val id: Int? = null,
 	val sys: Sys? = null,
 	val base: String? = null,
-	val wind: Wind? = null
+	@SerializedName("wind")
+	val wind: wind1? = null
 )
 
 data class Clouds(
 	val all: Int? = null
 )
 
-data class Wind(
+data class wind1(
 	val deg: Int? = null,
 	val speed: Double? = null
 )

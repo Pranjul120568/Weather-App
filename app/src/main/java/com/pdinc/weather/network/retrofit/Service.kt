@@ -29,7 +29,7 @@ suspend fun getWeatherByGps(
 @GET(CURRENT)
 suspend fun getCurrentWeatherByName(
         @Query("q") location: String,
-        @Query("appid")apiKey: String = API_KEY
+        @Query("appid")apiKey: String= API_KEY
 ):Response<CurrentWeather>
 @GET(CURRENTBYGPS)
     suspend fun getCurrentByGps(

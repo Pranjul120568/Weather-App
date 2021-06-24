@@ -3,10 +3,11 @@ package com.pdinc.weather.network
 import com.pdinc.weather.models.CurrentWeather
 import com.pdinc.weather.models.FetchAll
 import com.pdinc.weather.utils.Result
+import retrofit2.Response
 
 interface WeatherRemoteDataSource {
-suspend fun getWeatherBySearch(query:String):Result<FetchAll>
-suspend fun getWeatherByGps(latitude:Double,longitude:Double):Result<FetchAll>
-suspend fun getCurrentWeatherBySearch(query:String):Result<CurrentWeather>
-suspend fun getCurrentWeatherByGps(latitude:Double,longitude:Double):Result<CurrentWeather>
+suspend fun getWeatherBySearch(query:String):Response<FetchAll>
+suspend fun getWeatherByGps(latitude:Double,longitude:Double):Response<List<FetchAll?>>
+suspend fun getCurrentWeatherBySearch(query:String):Response<CurrentWeather>
+suspend fun getCurrentWeatherByGps(latitude:Double,longitude:Double):Response<CurrentWeather>
 }

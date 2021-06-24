@@ -8,7 +8,7 @@ data class WeatherForecast (
         @SerializedName("dt")
         val dateunrefined:Long,
         @SerializedName("wind")
-        val winddata:wind,
+        val winddata:wind11,
         @SerializedName("weather")
         val description:List<weatherDescription>,
         @SerializedName("main")

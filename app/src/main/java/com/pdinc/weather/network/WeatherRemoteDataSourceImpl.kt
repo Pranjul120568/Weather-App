@@ -1,75 +1,88 @@
 package com.pdinc.weather.network
 
+import android.util.Log
+import com.pdinc.weather.BuildConfig
+import com.pdinc.weather.adapter.searchCityAdapter
 import com.pdinc.weather.models.CurrentWeather
 import com.pdinc.weather.models.FetchAll
 import com.pdinc.weather.network.retrofit.Client
 import com.pdinc.weather.network.retrofit.Service
-import com.pdinc.weather.utils.Result
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.lang.Exception
+import kotlinx.coroutines.*
+import retrofit2.Response
+
 
 class WeatherRemoteDataSourceImpl :WeatherRemoteDataSource {
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
     private val retrofitClient:Service= Client.retrofit_service
-    override suspend fun getWeatherBySearch(query:String): Result<FetchAll> =
-        withContext(ioDispatcher){
-        return@withContext try {
-            val result=retrofitClient.getSpecificWeather(query)
-            if(result.isSuccessful){
-                val networkWeather=result.body()
-                Result.Success(networkWeather)
-            }else{
-              Result.Success(null)
+    override suspend fun getWeatherBySearch(query:String): Response<FetchAll> =
+            withContext(ioDispatcher){
+                return@withContext try {
+                    val result=retrofitClient.getSpecificWeather(query,BuildConfig.API_KEY)
+                    if(result.isSuccessful){
+                        Log.d("Query Done","Data Fetched")
+                        val networkWeather=result.body()
+                        Response.success(networkWeather)
+                    }else{
+                        Log.d("Query Unsuccesful","Data Fetched")
+                        Response.success(null)
+                    }
+                }catch(e:Exception){
+                    Log.d("Query Unsuccesful","Data Not Fetched")
+                    Response.success(null)
+                }
             }
-        }catch (exception:Exception){
-              Result.Error(exception)
-        }
-        }
-
-    override suspend fun getWeatherByGps(latitude: Double, longitude: Double): Result<FetchAll>  =
+    override suspend fun getWeatherByGps(latitude: Double, longitude: Double): Response<List<FetchAll?>>  =
             withContext(ioDispatcher){
                 return@withContext try {
                     val result=retrofitClient.getWeatherByGps(latitude,longitude)
                     if(result.isSuccessful){
-                        val networkWeather=result.body()
-                        Result.Success(networkWeather)
+                        val networkWeather= listOf(result.body())
+                        Log.d("Query Done","Data Fetched")
+                        Response.success(networkWeather)
+
                     }else{
-                        Result.Success(null)
+                        Log.d("Query Done","Data Fetched")
+                        Response.success(null)
                     }
                 }catch (exception:Exception){
-                    Result.Error(exception)
+                    Log.d("Query Done",exception.toString())
+
+                    Response.success(null)
                 }
             }
 
-    override suspend fun getCurrentWeatherBySearch(query: String): Result<CurrentWeather> =
-            withContext(ioDispatcher){
-                return@withContext try {
-                    val result=retrofitClient.getCurrentWeatherByName(query)
-                    if(result.isSuccessful){
-                        val networkWeather=result.body()
-                        Result.Success(networkWeather)
-                    }else{
-                        Result.Success(null)
-                    }
-                }catch (exception:Exception){
-                    Result.Error(exception)
-                }
-            }
+    override suspend fun getCurrentWeatherBySearch(query: String): Response<CurrentWeather> =
+        withContext(ioDispatcher) {
+            return@withContext try {
+                val result = retrofitClient.getCurrentWeatherByName(query, BuildConfig.API_KEY)
+                if (result.isSuccessful) {
+                    Log.d("Query Done","Data Fetched")
+                    val networkWeather = result.body()
+                    Response.success(networkWeather)
 
-    override suspend fun getCurrentWeatherByGps(latitude: Double, longitude: Double): Result<CurrentWeather>  =
+                } else {
+                    Log.d("Query Unsuccesful",query)
+                    Response.success(null)
+                }
+            } catch (exception: Exception) {
+
+                Log.d("Query Unsuccesful", exception.toString())
+                Response.success(null)
+            }
+        }
+
+    override suspend fun getCurrentWeatherByGps(latitude: Double, longitude: Double): Response<CurrentWeather>  =
             withContext(ioDispatcher){
                 return@withContext try {
                     val result=retrofitClient.getCurrentByGps(latitude,longitude)
                     if(result.isSuccessful){
                         val networkWeather=result.body()
-                        Result.Success(networkWeather)
+                        Response.success(networkWeather)
                     }else{
-                        Result.Success(null)
+                        Response.success(null)
                     }
                 }catch (exception:Exception){
-                    Result.Error(exception)
+                    Response.success(null)
                 }
             }
 }

@@ -1,160 +1,104 @@
 package com.pdinc.weather.activities
 
-import android.Manifest
-import android.content.Context
-import android.content.Intent
-import android.content.IntentSender
-import android.content.pm.PackageManager
-import android.net.Uri
+import android.app.SearchManager
 import android.os.Bundle
-import android.provider.Settings
+import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
-import com.google.android.gms.tasks.Task
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.pdinc.weather.R
+import com.pdinc.weather.adapter.searchCityAdapter
 import com.pdinc.weather.databinding.FragmentSearchBinding
-import com.pdinc.weather.network.WeatherRemoteDataSource
+import com.pdinc.weather.models.CurrentWeather
+import com.pdinc.weather.models.weatherDescription
 import com.pdinc.weather.network.WeatherRemoteDataSourceImpl
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.pdinc.weather.utils.Result
+import kotlinx.coroutines.*
+import retrofit2.Response
 
 class SearchFragment : Fragment() {
-    private lateinit var bindings: FragmentSearchBinding
     private val searchName = WeatherRemoteDataSourceImpl()
-    private val LOCATION_REQUEST_CODE = 2
-    val permissions = arrayOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION
-    )
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var request: LocationRequest
-    private lateinit var builder: LocationSettingsRequest.Builder
-    private lateinit var locationCallback: LocationCallback
-
+    private lateinit var searchItem1:SearchView
+    private lateinit var binding:FragmentSearchBinding
+    private val search_adapter=searchCityAdapter()
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        bindings = view?.let { FragmentSearchBinding.bind(it) }!!
-
-        return inflater.inflate(R.layout.fragment_search, container, false)
+        val k= inflater.inflate(R.layout.fragment_search, container, false)
+        return k
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.navigate, menu)
-        val searchItem = menu.findItem(R.id.searchPlace)
-        val searchView = searchItem.actionView as SearchView
-        searchView.onActionViewExpanded()
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
+        binding = FragmentSearchBinding.bind(view)
+        searchItem1=binding.searchPlace
+        searchItem1.onActionViewExpanded()
+
+        searchItem1.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null && query.trim().isNotEmpty()) {
-                    GlobalScope.launch(Dispatchers.IO) {
-                        searchByName(query)
-                    }
+                    runBlocking { searchByName(query) }
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText!!.isNotEmpty()) {
-                    GlobalScope.launch(Dispatchers.IO) {
-                        searchByName(newText)
-                    }
+                if (newText.isNullOrEmpty()) {
+
                 }
-                return false
+                return true
             }
+
         })
+        //searchView1 = requireView().findViewById(R.id.searchPlace)
     }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == LOCATION_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                startGPS()
-            } else {
-                val showRationale = shouldShowRequestPermissionRationale(permissions[0])
-                if (!showRationale) {
-                    //Never ask again
-                    permissionExplanation()
-                }
-            }
+        override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+            super.onCreateOptionsMenu(menu, inflater)
+            inflater.inflate(R.menu.navigate, menu)
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
 
-    private suspend fun searchByName(query: String) {
-        searchName.getCurrentWeatherBySearch(query)
-    }
-
-    private fun hasPermissions(context: Context, vararg permissions: String): Boolean =
-            permissions.all {
-                ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+        private suspend fun searchByName(query: String): Response<CurrentWeather> {
+            val re:Response<CurrentWeather>
+            withContext(Dispatchers.IO) {
+               re= searchName.getCurrentWeatherBySearch(query)
             }
-    private fun openPermissionSetting() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        val uri: Uri = Uri.fromParts("package", activity?.packageName, null)
-        intent.data = uri
-        startActivityForResult(intent, 0)
-    }
-
-    private fun permissionExplanation() {
-
-        val builder = MaterialAlertDialogBuilder(requireContext(), R.style.Theme_MaterialComponents_Dialog_Alert)
-        builder.setTitle(getString(R.string.location_required))
-        builder.setMessage(getString(R.string.access_to_gps))
-        builder.apply {
-            setPositiveButton(
-                   R.string.ok
-            ) { dialog, _ ->
-                dialog.dismiss()
-                if (shouldShowRequestPermissionRationale(permissions[0]) || shouldShowRequestPermissionRationale(
-                                permissions[1]
-                        )
-                )
-                    requestPermissions(
-                            permissions,
-                            LOCATION_REQUEST_CODE
-                    )
-                else
-                    openPermissionSetting()
+            if(re.body()!=null) {
+                Log.d("Data Fetched","Presented")
+                setData(re)
+            }else{
+                Log.d("Data Fetched","Presented")
+                Toast.makeText(requireContext(),"Please enter valid city name!",Toast.LENGTH_SHORT).show()
             }
-            setNegativeButton(
-                    R.string.cancel
-            ) { dialog, _ ->
-                dialog.dismiss()
-            }
+            return re
         }
-        builder.create()
-        builder.show()
 
-    }
+        private fun setData(it: Response<CurrentWeather>) {
+            GlobalScope.launch(Dispatchers.Main) {
+                                 binding.placeNameTv.text = it.body()?.name
+                                 binding.tempTv.text = it.body()?.main?.temp.toString()
+                                 binding.llofplaceitem.isVisible = true
+                             }
+        }
 
-    private fun startGPS() {
-
-        request = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-
-        builder = LocationSettingsRequest.Builder().addLocationRequest(request)
-
-        val result: Task<LocationSettingsResponse> =
-                LocationServices.getSettingsClient(context)
-                        .checkLocationSettings(builder.build())
-
-        result.addOnFailureListener {
-            if (it is ResolvableApiException) {
-                try {
-                    val resolvable = it
-                    resolvable.startResolutionForResult(requireActivity(), 8990)
-                } catch (ex: IntentSender.SendIntentException) {
-                    ex.printStackTrace()
-                }
-            }
+        private suspend fun searchByGps(lon: Double, lat: Double) {
+            searchName.getCurrentWeatherByGps(longitude = lon, latitude = lat)
         }
     }
-}
+
+
+//                    runBlocking {
+//                         searchByName(searchView1.query.toString()).let {
+//                             GlobalScope.launch(Dispatchers.Main) {
+//                                 binding.placeNameTv.text = it.body()?.name
+//                                 binding.tempTv.text = it.body()?.main?.temp.toString()
+//                                 binding.llofplaceitem.isVisible = true
+//                             }
+//                         }
+//                        }
+//                    }
