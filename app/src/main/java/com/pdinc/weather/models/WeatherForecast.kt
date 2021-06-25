@@ -12,5 +12,5 @@ data class WeatherForecast (
         @SerializedName("weather")
         val description:List<weatherDescription>,
         @SerializedName("main")
-        val weatherTemp:List<Tempratures>
+        val weatherTemp:Tempratures
         )

@@ -31,21 +31,20 @@ class WeatherRemoteDataSourceImpl :WeatherRemoteDataSource {
                     Response.success(null)
                 }
             }
-    override suspend fun getWeatherByGps(latitude: Double, longitude: Double): Response<List<FetchAll?>>  =
+    override suspend fun getWeatherByGps(latitude: Int, longitude: Int): Response<FetchAll?>  =
             withContext(ioDispatcher){
                 return@withContext try {
                     val result=retrofitClient.getWeatherByGps(latitude,longitude)
                     if(result.isSuccessful){
-                        val networkWeather= listOf(result.body())
-                        Log.d("Query Done","Data Fetched")
+                        val networkWeather= result.body()
+                        Log.d("Query Ki maa ki","Data Fetched")
                         Response.success(networkWeather)
-
                     }else{
-                        Log.d("Query Done","Data Fetched")
+                        Log.d("Query ki maa ki","Data Fetched")
                         Response.success(null)
                     }
                 }catch (exception:Exception){
-                    Log.d("Query Done",exception.toString())
+                    Log.d("Query ki maa ki",exception.toString())
 
                     Response.success(null)
                 }
