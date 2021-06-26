@@ -31,7 +31,7 @@ class WeatherRemoteDataSourceImpl :WeatherRemoteDataSource {
                     Response.success(null)
                 }
             }
-    override suspend fun getWeatherByGps(latitude: Int, longitude: Int): Response<FetchAll?>  =
+    override suspend fun getWeatherByGps(latitude: Double, longitude: Double): Response<FetchAll?>  =
             withContext(ioDispatcher){
                 return@withContext try {
                     val result=retrofitClient.getWeatherByGps(latitude,longitude)

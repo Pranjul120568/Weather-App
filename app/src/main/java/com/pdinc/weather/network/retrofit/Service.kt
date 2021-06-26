@@ -22,8 +22,8 @@ suspend fun getSpecificWeather(
 ): Response<FetchAll>
 @GET(WEATHERBYGPS)
 suspend fun getWeatherByGps(
-    @Query("lat")latitude:Int,
-    @Query("lon")longitude:Int,
+    @Query("lat")latitude:Double,
+    @Query("lon")longitude:Double,
     @Query("appid") apiKey: String = API_KEY
 ): Response<FetchAll>
 @GET(CURRENT)

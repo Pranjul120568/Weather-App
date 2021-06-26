@@ -85,20 +85,4 @@ class SearchFragment : Fragment() {
                                  binding.llofplaceitem.isVisible = true
                              }
         }
-
-        private suspend fun searchByGps(lon: Double, lat: Double) {
-            searchName.getCurrentWeatherByGps(longitude = lon, latitude = lat)
-        }
     }
-
-
-//                    runBlocking {
-//                         searchByName(searchView1.query.toString()).let {
-//                             GlobalScope.launch(Dispatchers.Main) {
-//                                 binding.placeNameTv.text = it.body()?.name
-//                                 binding.tempTv.text = it.body()?.main?.temp.toString()
-//                                 binding.llofplaceitem.isVisible = true
-//                             }
-//                         }
-//                        }
-//                    }

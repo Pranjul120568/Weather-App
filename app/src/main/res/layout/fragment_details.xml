@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:scrollbars="vertical"
     tools:context=".activities.DetailsFragment">
-
     <TextView
         android:id="@+id/placeTv"
         android:layout_width="match_parent"
@@ -13,31 +13,30 @@
         android:fontFamily="@font/hind_medium"
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
-        android:text="New Delhi"
+        android:text=""
         android:textSize="40sp" />
-
     <ImageView
         android:layout_width="200dp"
         android:layout_height="170dp"
+        android:id="@+id/placeIv"
         android:layout_below="@+id/placeTv"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="110dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="110dp" />
-
     <TextView
         android:id="@+id/tempraturemainScreenTv"
-        android:layout_above="@+id/hourlyforecastcard"
-        android:text="33°C"
-        android:textSize="70sp"
         android:layout_width="wrap_content"
-        android:layout_margin="25dp"
-        android:layout_height="wrap_content"/>
-
-<com.google.android.material.card.MaterialCardView
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/placeIv"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="25dp"
+        android:text="20C"
+        android:textSize="40sp" />
+    <com.google.android.material.card.MaterialCardView
     android:id="@+id/hourlyforecastcard"
-    android:layout_above="@+id/dailyforecastcard"
+        android:layout_below="@+id/tempraturemainScreenTv"
     android:layout_width="match_parent"
     app:cardCornerRadius="35dp"
     android:layout_margin="10dp"
@@ -47,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed-medium"
-        android:text="  HOURLY FORECAST"
+        android:text="  WEATHER FORECAST"
         android:textSize="30sp" />
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="46dp"
@@ -59,30 +58,85 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/daily_temp" />
 </com.google.android.material.card.MaterialCardView>
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/dailyforecastcard"
-        android:layout_margin="10dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="20dp"
+    <LinearLayout
+        android:id="@+id/llofdescription"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/hourlyforecastcard"
         android:layout_width="match_parent"
-        app:cardCornerRadius="35dp"
-        android:backgroundTint="@color/green"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+        <TextView
+            android:gravity="center"
+            android:textSize="20sp"
+            android:text="WIND"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+            <TextView
+                android:gravity="center"
+                android:id="@+id/windTv"
+                android:textSize="20sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:orientation="vertical"
         android:layout_height="wrap_content">
         <TextView
+            android:textSize="20sp"
+            android:text="CLOUDS"
+            android:gravity="center"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:textSize="20sp"
+            android:gravity="center"
+            android:id="@+id/cloudsTv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textSize="20sp"
+            android:text="PRESSURE"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/pressureTv"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed-medium"
-            android:text="  DAILY FORECAST"
-            android:textSize="30sp" />
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="46dp"
-            android:id="@+id/detailsRvDaily"
+            android:gravity="center"
+            android:textSize="20sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textSize="20sp"
+            android:text="HUMIDITY"
+            android:gravity="center"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="100dp"
-            android:scrollbars="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/daily_temp" />
-    </com.google.android.material.card.MaterialCardView>
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:textSize="20sp"
+            android:gravity="center"
+            android:id="@+id/humidityTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>

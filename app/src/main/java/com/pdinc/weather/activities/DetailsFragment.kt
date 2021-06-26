@@ -51,23 +51,18 @@ class DetailsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_details, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding= FragmentDetailsBinding.bind(view)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         checkGpsPermission()
         binding.detailsRvHourly.isPaddingRelative
-        hourlyAdapter
         Log.d("TAG", "has permisions")
-        val lM=GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
+        val hourlyLayoutManager=GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
         binding.detailsRvHourly.apply {
-
-            layoutManager = lM
+            layoutManager = hourlyLayoutManager
             binding.detailsRvHourly.adapter = hourlyAdapter
         }
-//        binding.detailsRvDaily.layoutManager=lM
-//        binding.detailsRvDaily.adapter
     }
 
     private fun startGPS() {
@@ -98,7 +93,11 @@ class DetailsFragment : Fragment() {
                     // Got last known location. In some rare situations this can be null.
                     Log.d("Location",location!!.latitude.toString()+" "+location.longitude.toString())
                     if (location != null) {
-                        runBlocking{ searchByGPS(location) }
+                        runBlocking{ searchForecastByGPS(location)
+                            getCurrentByGps(location)
+                        }
+
+
                     }
                 }
         locationCallback = object : LocationCallback() {
@@ -113,9 +112,9 @@ class DetailsFragment : Fragment() {
                 // production app, the Activity would be listening for changes to a database
                 // with new locations, but we are simplifying things a bit to focus on just
                 // learning the location side of things.
-                val intent = Intent(ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST)
-                intent.putExtra(EXTRA_LOCATION, currentLocation)
-                LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(intent)
+//                val intent = Intent(ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST)
+//                intent.putExtra(EXTRA_LOCATION, currentLocation)
+//                LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(intent)
              // Updates notification content if this service is running as a foreground
                 // service.
 
@@ -136,13 +135,25 @@ class DetailsFragment : Fragment() {
 
     }
 
-    private suspend fun searchByGPS(location: Location) {
-        val r=searchName.getWeatherByGps(location.latitude.toInt(), location.longitude.toInt())
+    private suspend fun searchForecastByGPS(location: Location) {
+        val r=searchName.getWeatherByGps(location.latitude, location.longitude)
         if(r.body()!=null){
             originalList.addAll(r.body()!!.fetchlist)
             hourlyAdapter.swapData(r.body()!!.fetchlist)
         }else{
             Toast.makeText(requireContext(), "Network Error", Toast.LENGTH_SHORT).show()
+        }
+    }
+    private suspend fun getCurrentByGps(location: Location){
+        val r=searchName.getCurrentWeatherByGps(location.latitude,location.longitude)
+        if(r.body()!=null){
+            r.body().apply {
+                binding.placeTv.text=this!!.name
+                binding.tempraturemainScreenTv.text=this.main!!.temp.toString()
+                binding.humidityTv.text= this.main.humidity.toString()
+                binding.pressureTv.text=this.main.pressure.toString()
+                binding.windTv.text=this.wind!!.speed.toString()
+            }
         }
     }
     private fun checkGpsPermission() {
@@ -184,7 +195,6 @@ class DetailsFragment : Fragment() {
     }
 
     private fun permissionExplanation() {
-
         val builder = MaterialAlertDialogBuilder(requireContext(), R.style.Theme_MaterialComponents_Dialog)
         builder.setTitle(getString(R.string.location_required))
         builder.setMessage(getString(R.string.access_to_gps))
