@@ -10,9 +10,5 @@
         android:id="@+id/searchFragment"
         android:icon="@drawable/ic_search"
         android:title="Search"/>
-    <item
-        android:id="@+id/refresh"
-        android:title="RE"
-        app:showAsAction="ifRoom|collapseActionView"
-        />
+
 </menu>

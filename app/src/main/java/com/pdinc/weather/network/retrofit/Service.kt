@@ -38,3 +38,4 @@ suspend fun getCurrentWeatherByName(
             @Query("appid") apiKey: String = API_KEY
     ):Response<CurrentWeather>
 }
+//api.openweathermap.org/data/2.5/forecast?lat=28.6810594}&lon=77.3394509&appid=c053cb48689e689aa1784cc74e6e4f6b

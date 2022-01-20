@@ -1,5 +1,6 @@
 package com.pdinc.weather.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +11,6 @@ import com.pdinc.weather.models.CurrentWeather
 class searchCityAdapter() :RecyclerView.Adapter<searchCityAdapter.SearchCityViewHolder>() {
     private var result:List<CurrentWeather> = ArrayList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchCityViewHolder {
-              // SearchCityViewHolder().LayoutInflater.from(parent.context).inflate(R.layout.daily_temp,parent,false)
         val bindingtoinflate=PlaceItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return SearchCityViewHolder(bindingtoinflate)
     }
@@ -24,7 +24,14 @@ class searchCityAdapter() :RecyclerView.Adapter<searchCityAdapter.SearchCityView
     inner class SearchCityViewHolder(private val binding: PlaceItemBinding) :RecyclerView.ViewHolder(binding.root){
         fun bind(item:CurrentWeather)=with(binding){
             binding.placeNameTv.text=item.name
-            binding.tempTv.text= item.main?.temp.toString()
+            var tempra=convertTemp(item.main!!.temp!!)+"°C"
+            binding.tempTv.text= tempra
         }
+    }
+    fun convertTemp(temprature:Double):String{
+        var temp=temprature
+        temp-=273.15
+        val returntemp=temp.toInt().toString()
+        return returntemp
     }
 }

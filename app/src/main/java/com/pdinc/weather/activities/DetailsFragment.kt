@@ -1,33 +1,43 @@
 package com.pdinc.weather.activities
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Looper
-import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.gms.location.*
+import com.bumptech.glide.Glide
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.pdinc.weather.R
 import com.pdinc.weather.adapter.weatherHourlyAdapter
 import com.pdinc.weather.databinding.FragmentDetailsBinding
 import com.pdinc.weather.models.WeatherForecast
 import com.pdinc.weather.network.WeatherRemoteDataSourceImpl
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.util.concurrent.TimeUnit
+import java.util.*
 
 
 class DetailsFragment : Fragment() {
@@ -35,13 +45,15 @@ class DetailsFragment : Fragment() {
     private lateinit var binding:FragmentDetailsBinding
     private  val hourlyAdapter= weatherHourlyAdapter()
     private val LOCATION_REQUEST_CODE = 2
-    val permissions = arrayOf(
+    private lateinit var rl:RelativeLayout
+    private val permissions = arrayOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
     )
     private var currentLocation:Location?=null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
+    private var c=Calendar.getInstance()
     private  var originalList= arrayListOf<WeatherForecast?>()
     private lateinit var locationCallback: LocationCallback
     override fun onCreateView(
@@ -50,13 +62,14 @@ class DetailsFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_details, container, false)
     }
-
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding= FragmentDetailsBinding.bind(view)
+        rl=view.findViewById(R.id.detailsRl)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         checkGpsPermission()
-        binding.detailsRvHourly.isPaddingRelative
+        binding.detailsRl.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.sun_yellow))
         Log.d("TAG", "has permisions")
         val hourlyLayoutManager=GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
         binding.detailsRvHourly.apply {
@@ -64,75 +77,19 @@ class DetailsFragment : Fragment() {
             binding.detailsRvHourly.adapter = hourlyAdapter
         }
     }
-
+    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("MissingPermission")
     private fun startGPS() {
-        locationRequest = LocationRequest.create().apply {
-            // Sets the desired interval for active location updates. This interval is inexact. You
-            // may not receive updates at all if no location sources are available, or you may
-            // receive them less frequently than requested. You may also receive updates more
-            // frequently than requested if other applications are requesting location at a more
-            // frequent interval.
-            //
-            // IMPORTANT NOTE: Apps running on Android 8.0 and higher devices (regardless of
-            // targetSdkVersion) may receive updates less frequently than this interval when the app
-            // is no longer in the foreground.
-            interval = TimeUnit.SECONDS.toMillis(60)
-
-            // Sets the fastest rate for active location updates. This interval is exact, and your
-            // application will never receive updates more frequently than this value.
-            fastestInterval = TimeUnit.SECONDS.toMillis(30)
-
-            // Sets the maximum time when batched location updates are delivered. Updates may be
-            // delivered sooner than this interval.
-            maxWaitTime = TimeUnit.MINUTES.toMillis(2)
-
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
         fusedLocationClient.lastLocation
                 .addOnSuccessListener { location : Location? ->
                     // Got last known location. In some rare situations this can be null.
                     Log.d("Location",location!!.latitude.toString()+" "+location.longitude.toString())
-                    if (location != null) {
-                        runBlocking{ searchForecastByGPS(location)
-                            getCurrentByGps(location)
-                        }
-
-
+                    runBlocking{ searchForecastByGPS(location)
+                        getCurrentByGps(location)
                     }
                 }
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
-
-                // Normally, you want to save a new location to a database. We are simplifying
-                // things a bit and just saving it as a local variable, as we only need it again
-                // if a Notification is created (when the user navigates away from app).
-                currentLocation = locationResult.lastLocation
-                // Notify our Activity that a new location was added. Again, if this was a
-                // production app, the Activity would be listening for changes to a database
-                // with new locations, but we are simplifying things a bit to focus on just
-                // learning the location side of things.
-//                val intent = Intent(ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST)
-//                intent.putExtra(EXTRA_LOCATION, currentLocation)
-//                LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(intent)
-             // Updates notification content if this service is running as a foreground
-                // service.
-
-            }
-        }
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
-
-
+//
+//
     }
 
     private suspend fun searchForecastByGPS(location: Location) {
@@ -144,18 +101,34 @@ class DetailsFragment : Fragment() {
             Toast.makeText(requireContext(), "Network Error", Toast.LENGTH_SHORT).show()
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun getCurrentByGps(location: Location){
         val r=searchName.getCurrentWeatherByGps(location.latitude,location.longitude)
         if(r.body()!=null){
-            r.body().apply {
-                binding.placeTv.text=this!!.name
-                binding.tempraturemainScreenTv.text=this.main!!.temp.toString()
-                binding.humidityTv.text= this.main.humidity.toString()
-                binding.pressureTv.text=this.main.pressure.toString()
-                binding.windTv.text=this.wind!!.speed.toString()
+            GlobalScope.launch (Dispatchers.IO){
+                      r.body().apply {
+                    binding.placeTv.text = this!!.name
+                          var temp= main?.temp?.minus(273.15)!!.toInt()
+//                          temp= String.format("%.1f",temp).toInt()
+                          val tempstr=temp.toString()+"°C"
+                    binding.tempraturemainScreenTv.text = tempstr
+                    binding.humidityTv.text = this.main.humidity.toString()
+                    binding.pressureTv.text = this.main.pressure.toString()
+                    binding.windTv.text = this.wind!!.speed.toString()
+                    val sunset = this.sys!!.sunset
+                    val sunrise = this.sys.sunrise
+                          val id=this.weather!!.get(0)!!.id
+                          Log.d("TAG",id.toString())
+                    changeColor(sunset!!, sunrise!!,id!!)
+                          var weatherdescription=weather[0]!!.description
+                          var c=weatherdescription!![0].toUpperCase()
+                          var descript=c+weatherdescription.substring(1)
+                          binding.descriptiontv.text=descript
+                }
             }
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun checkGpsPermission() {
         when {
             hasPermissions(requireContext(), *permissions) -> startGPS()
@@ -172,6 +145,7 @@ class DetailsFragment : Fragment() {
                 ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
             }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == LOCATION_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
@@ -186,7 +160,6 @@ class DetailsFragment : Fragment() {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
-
     private fun openPermissionSetting() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri: Uri = Uri.fromParts("package", activity?.packageName, null)
@@ -223,19 +196,55 @@ class DetailsFragment : Fragment() {
         builder.create()
         builder.show()
     }
-    companion object {
-        private const val TAG = "ForegroundOnlyLocationService"
+    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("ResourceAsColor", "ResourceType")
+    private fun changeColor(sunrise:Int, sunset :Int,main:Int){
+        val placeTv=requireView().findViewById<TextView>(R.id.placeTv)
+        val tempraturemainScreenTv=requireView().findViewById<TextView>(R.id.tempraturemainScreenTv)
+        val descriptiontv=requireView().findViewById<TextView>(R.id.descriptiontv)
 
-        internal const val ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST =
-                "$PACKAGE_NAME.action.FOREGROUND_ONLY_LOCATION_BROADCAST"
-
-        internal const val EXTRA_LOCATION = "$PACKAGE_NAME.extra.location"
-
-        private const val EXTRA_CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION =
-                "$PACKAGE_NAME.extra.CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION"
-
-        private const val NOTIFICATION_ID = 12345678
-
-        private const val NOTIFICATION_CHANNEL_ID = "while_in_use_channel_01"
+        val time=System.currentTimeMillis()
+        val suns=sunset.toLong()
+        val sunr=sunrise.toLong()
+        Log.d("TIME IS",time.toString()+" "+(suns*1000).toString()+" "+(sunr*1000).toString())
+        if(time<sunr*1000 && time>suns*1000){
+            rl.setBackgroundResource(R.color.sky_blue)
+            Log.d("",main.toString())
+            if(main==800){
+                GlobalScope.launch(Dispatchers.Main) {
+                    Glide.with(requireContext()).load(R.drawable.iconssun).into(binding.placeIv)
+                    binding.placeIv.setBackgroundResource(R.color.sky_blue)
+                }
+            }else if(main>800){
+                binding.placeIv.setImageResource(R.drawable.iconsclouds)
+            }else if(main>=300 && main<=500){
+                GlobalScope.launch(Dispatchers.Main) {
+                    Glide.with(requireContext()).load(R.drawable.icons8raincloud).into(binding.placeIv)
+                }
+            }else{
+                GlobalScope.launch(Dispatchers.Main) {
+                    Glide.with(requireContext()).load(R.drawable.icons8rain).into(binding.placeIv)
+                }
+            }
+        }else {
+            Log.d("TAG",main.toString())
+            rl.setBackgroundResource(R.color.night_dark)
+            placeTv.setTextColor(resources.getColor(R.color.white))
+            tempraturemainScreenTv.setTextColor(resources.getColor(R.color.white))
+            descriptiontv.setTextColor(resources.getColor(R.color.white))
+            Log.d("HERE IS THE COLOR",R.color.white.toString())
+            if(main==800){
+                GlobalScope.launch(Dispatchers.Main) {
+                    Glide.with(requireContext()).load(R.drawable.iconsfog).into(binding.placeIv)
+                }
+            }else if(main>800){
+                binding.placeIv.setImageResource(R.drawable.iconsclouds)
+            }else{
+                GlobalScope.launch(Dispatchers.Main) {
+                    Glide.with(requireContext()).load(R.drawable.icons8rain).into(binding.placeIv)
+                }
+            }
+        }
     }
+    //api.openweathermap.org/data/2.5/weather?lat=28.6810615&lon=77.3394563&appid=c053cb48689e689aa1784cc74e6e4f6b
 }
