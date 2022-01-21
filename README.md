@@ -17,10 +17,6 @@
 
 <p float="left">
 <img src="screenshots/Day.jpeg" width="220" height="500"/>
- </p>
- <p float="left">
  <img src="screenshots/Night.jpeg" width="220" height="500"/>
-  </p>
-  <p float="left">
   <img src="screenshots/Search.jpeg" width="220" height="500"/>
    </p>
