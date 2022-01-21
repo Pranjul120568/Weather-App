@@ -16,14 +16,14 @@
 ## Screenshots
 
 <p float="left">
-<img src="screenshots/Day.jpeg" width="10" height="10"/>
+<img src="screenshots/Day.jpeg"/>
  <br/>
  </p>
  <p float="left">
- <img src="screenshots/Night.jpeg" width="10" height="10"/>
+ <img src="screenshots/Night.jpeg"/>
   <br/>
   </p>
   <p float="left">
-  <img src="screenshots/Search.jpeg" width="10" height="10"/>
+  <img src="screenshots/Search.jpeg"/>
    <br/>
    </p>
