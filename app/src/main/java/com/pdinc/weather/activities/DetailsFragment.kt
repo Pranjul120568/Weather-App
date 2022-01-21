@@ -39,7 +39,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.*
 
-
 class DetailsFragment : Fragment() {
     private val searchName = WeatherRemoteDataSourceImpl()
     private lateinit var binding:FragmentDetailsBinding
