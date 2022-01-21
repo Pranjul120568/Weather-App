@@ -8,3 +8,7 @@
 * MVVM
 * Kotlin
 * RecyclerView
+
+## API Used
+
+* OpenWeatherMap
