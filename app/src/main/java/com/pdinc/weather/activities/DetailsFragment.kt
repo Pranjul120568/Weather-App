@@ -207,12 +207,12 @@ class DetailsFragment : Fragment() {
         val sunr=sunrise.toLong()
         Log.d("TIME IS",time.toString()+" "+(suns*1000).toString()+" "+(sunr*1000).toString())
         if(time<sunr*1000 && time>suns*1000){
-            rl.setBackgroundResource(R.color.sky_blue)
+            rl.setBackgroundResource(R.color.white)
             Log.d("",main.toString())
             if(main==800){
                 GlobalScope.launch(Dispatchers.Main) {
                     Glide.with(requireContext()).load(R.drawable.iconssun).into(binding.placeIv)
-                    binding.placeIv.setBackgroundResource(R.color.sky_blue)
+                    binding.placeIv.setBackgroundResource(R.color.white)
                 }
             }else if(main>800){
                 binding.placeIv.setImageResource(R.drawable.iconsclouds)
@@ -225,9 +225,10 @@ class DetailsFragment : Fragment() {
                     Glide.with(requireContext()).load(R.drawable.icons8rain).into(binding.placeIv)
                 }
             }
-        }else {
+        }else{
             Log.d("TAG",main.toString())
             rl.setBackgroundResource(R.color.night_dark)
+            binding.placeIv.setBackgroundResource(R.color.night_dark)
             placeTv.setTextColor(resources.getColor(R.color.white))
             tempraturemainScreenTv.setTextColor(resources.getColor(R.color.white))
             descriptiontv.setTextColor(resources.getColor(R.color.white))

@@ -2,7 +2,6 @@ package com.pdinc.weather.network
 
 import android.util.Log
 import com.pdinc.weather.BuildConfig
-import com.pdinc.weather.adapter.searchCityAdapter
 import com.pdinc.weather.models.CurrentWeather
 import com.pdinc.weather.models.FetchAll
 import com.pdinc.weather.network.retrofit.Client
@@ -17,12 +16,17 @@ class WeatherRemoteDataSourceImpl :WeatherRemoteDataSource {
     override suspend fun getWeatherBySearch(query:String): Response<FetchAll> =
             withContext(ioDispatcher){
                 return@withContext try {
-                    val result=retrofitClient.getSpecificWeather(query,BuildConfig.API_KEY)
+                    val result=retrofitClient.getSpecificWeather(query)
                     if(result.isSuccessful){
                         Log.d("Query Done","Data Fetched")
                         val networkWeather=result.body()
                         Response.success(networkWeather)
                     }else{
+                        try {
+                            if(result.isSuccessful){}
+                        }catch(ex:Exception){
+
+                        }
                         Log.d("Query Unsuccesful","Data Fetched")
                         Response.success(null)
                     }
@@ -58,7 +62,6 @@ class WeatherRemoteDataSourceImpl :WeatherRemoteDataSource {
                     Log.d("Query Done","Data Fetched")
                     val networkWeather = result.body()
                     Response.success(networkWeather)
-
                 } else {
                     Log.d("Query Unsuccesful",query)
                     Response.success(null)

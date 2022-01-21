@@ -1,65 +1,314 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.SearchFragment">
 
-<androidx.appcompat.widget.SearchView
-    android:id="@+id/searchPlace"
-    android:layout_width="match_parent"
-    android:focusable="false"
-    android:focusableInTouchMode="false"
-    android:layout_height="50dp"/>
-
-    <LinearLayout
-        android:id="@+id/llofplaceitem"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchPlace"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/searchPlace"
-        android:orientation="vertical"
-        android:visibility="invisible">
+        android:layout_height="50dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/shortTempCv"
-            android:clickable="true"
-            android:focusable="true"
+    <RelativeLayout
+        android:id="@+id/rl1"
+        android:layout_width="match_parent"
+        android:layout_height="630dp"
+        android:layout_below="@id/searchPlace"
+        android:scrollbars="vertical"
+        android:visibility="invisible"
+        tools:context=".activities.DetailsFragment">
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:backgroundTint="@color/green"
-            app:cardCornerRadius="20dp">
+            android:layout_height="match_parent">
 
             <RelativeLayout
+                android:id="@+id/detailsRl"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/placeNameTv"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/placeTv1"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginEnd="30dp"
-                    android:layout_marginBottom="30dp"
-                    android:fontFamily="serif"
-                    android:text="New Delhi"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/montserrat"
+                    android:gravity="center_horizontal"
+                    android:text=""
                     android:textColor="@color/black"
-                    android:textSize="32sp" />
+                    android:textSize="40sp" />
+
+                <ImageView
+                    android:id="@+id/placeIv1"
+                    android:layout_width="150dp"
+                    android:layout_height="190dp"
+                    android:layout_below="@+id/placeTv1"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="110dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="110dp" />
 
                 <TextView
-                    android:id="@+id/tempTv"
+                    android:id="@+id/tempraturemainScreenTv1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginEnd="30dp"
-                    android:layout_marginBottom="30dp"
-                    android:text="30°C"
-                    android:textSize="30sp" />
+                    android:layout_below="@+id/placeIv1"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginBottom="25dp"
+                    android:text="20C"
+                    android:textColor="@color/black"
+                    android:textSize="49sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/descriptiontv1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/placeIv1"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="89dp"
+                    android:layout_marginEnd="70dp"
+                    android:text="zzzz"
+                    android:textColor="@color/black"
+                    android:textSize="25sp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/hourlyforecastcard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/descriptiontv1"
+                    android:layout_margin="10dp"
+                    android:backgroundTint="#B8B8FF"
+                    app:cardBackgroundColor="@color/white">
+
+                    <TextView
+                        android:id="@+id/weatherForecastTv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-condensed-medium"
+                        android:text="  Weather Forecast"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/detailsRvHourly1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
+                        android:orientation="horizontal"
+                        android:scrollbars="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/daily_temp" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/hourlyforecastcard"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:backgroundTint="#55DDE0"
+                    android:scrollbarAlwaysDrawVerticalTrack="true">
+
+                    <androidx.core.widget.NestedScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="34dp">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <ImageView
+                                        android:layout_width="35dp"
+                                        android:layout_height="35dp"
+                                        android:layout_marginStart="3dp"
+                                        android:layout_marginTop="3dp"
+                                        android:layout_marginBottom="3dp"
+                                        android:src="@drawable/icon_humidity" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="50dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:gravity="center"
+                                        android:text="HUMIDITY"
+                                        android:textColor="@color/black"
+                                        android:textSize="20sp" />
+
+                                    <TextView
+                                        android:id="@+id/humidityTv1"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginEnd="20dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:gravity="center"
+                                        android:text="20"
+                                        android:textColor="@color/black"
+                                        android:textSize="20sp" />
+                                </RelativeLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="34dp">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <ImageView
+                                        android:layout_width="35dp"
+                                        android:layout_height="35dp"
+                                        android:layout_marginStart="3dp"
+                                        android:layout_marginTop="3dp"
+                                        android:layout_marginBottom="3dp"
+                                        android:src="@drawable/icon_cloud" />
+
+                                    <TextView
+                                        android:id="@+id/textView"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="50dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:gravity="center"
+                                        android:text="CLOUDS"
+                                        android:textColor="@color/black"
+                                        android:textSize="20sp" />
+
+                                    <TextView
+                                        android:id="@+id/cloudsTv1"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginEnd="20dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:gravity="center"
+                                        android:text="90%"
+                                        android:textColor="@color/black"
+                                        android:textSize="20sp" />
+                                </RelativeLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="34dp">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <ImageView
+                                        android:layout_width="35dp"
+                                        android:layout_height="35dp"
+                                        android:layout_marginStart="3dp"
+                                        android:layout_marginTop="3dp"
+                                        android:layout_marginBottom="3dp"
+                                        android:src="@drawable/icon_pressure_gauge" />
+
+                                    <TextView
+                                        android:id="@+id/textView3"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="50dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:gravity="center"
+                                        android:text="PRESSURE"
+                                        android:textColor="@color/black"
+                                        android:textSize="20sp" />
+
+                                    <TextView
+                                        android:id="@+id/pressureTv1"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginEnd="20dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:gravity="center"
+                                        android:text="20"
+                                        android:textColor="@color/black"
+                                        android:textSize="20sp" />
+                                </RelativeLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="34dp"
+                                android:layout_gravity="center">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <ImageView
+                                        android:layout_width="35dp"
+                                        android:layout_height="35dp"
+                                        android:layout_marginStart="3dp"
+                                        android:layout_marginTop="3dp"
+                                        android:layout_marginBottom="3dp"
+                                        android:src="@drawable/icon_wind" />
+
+                                    <TextView
+                                        android:id="@+id/textView2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="50dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:gravity="center"
+                                        android:text="WIND"
+                                        android:textColor="@color/black"
+                                        android:textSize="20sp" />
+
+                                    <TextView
+                                        android:id="@+id/windTv1"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginEnd="20dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:gravity="center"
+                                        android:text="20"
+                                        android:textColor="@color/black"
+                                        android:textSize="20sp" />
+                                </RelativeLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.core.widget.NestedScrollView>
+
+                </com.google.android.material.card.MaterialCardView>
             </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+
 </RelativeLayout>

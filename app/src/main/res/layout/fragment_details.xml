@@ -69,9 +69,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/descriptiontv"
                 android:layout_margin="10dp"
-                android:backgroundTint="#00a8ff"
+                android:backgroundTint="#B8B8FF"
                 app:cardBackgroundColor="@color/white">
-
                 <TextView
                     android:id="@+id/weatherForecastTv"
                     android:layout_width="match_parent"
@@ -85,7 +84,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/detailsRvHourly"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
                     android:orientation="horizontal"
                     android:scrollbars="horizontal"
@@ -101,7 +100,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/sky_blue"
+                android:backgroundTint="#55DDE0"
                 android:scrollbarAlwaysDrawVerticalTrack="true">
 
                 <androidx.core.widget.NestedScrollView

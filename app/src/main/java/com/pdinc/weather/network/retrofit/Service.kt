@@ -9,13 +9,13 @@ import retrofit2.http.Query
 
 interface Service {
     companion object {
-        const val FORECAST="data/2.5/weather/forecast"
+        //const val FORECAST="data/2.5/weather/forecast"
         const val WEATHERBYGPS="data/2.5/forecast"
         const val CURRENT="data/2.5/weather"
         const val CURRENTBYGPS="data/2.5/weather"
         const val API_KEY=BuildConfig.API_KEY
     }
-@GET(FORECAST)
+@GET(WEATHERBYGPS)
 suspend fun getSpecificWeather(
         @Query("q") location:String,
         @Query("appid") apiKey: String = API_KEY
