@@ -12,3 +12,18 @@
 ## API Used
 
 * OpenWeatherMap
+
+## Screenshots
+
+<p float="left">
+<img src="screenshots/Day.jpeg" width="10" height="10"/>
+ <br/>
+ </p>
+ <p float="left">
+ <img src="screenshots/Night.jpeg" width="10" height="10"/>
+  <br/>
+  </p>
+  <p float="left">
+  <img src="screenshots/Search.jpeg" width="10" height="10"/>
+   <br/>
+   </p>
