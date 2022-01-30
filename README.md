@@ -16,7 +16,7 @@
 ## Screenshots
 
 <p float="left">
-<img src="screenshots/Day.jpeg" width="220" height="500"/>
- <img src="screenshots/Night.jpeg" width="220" height="500"/>
-  <img src="screenshots/Search.jpeg" width="220" height="500"/>
+<img src="screenshots1/Day.jpeg" width="220" height="500"/>
+ <img src="screenshots1/Night.jpeg" width="220" height="500"/>
+  <img src="screenshots1/Search.jpeg" width="220" height="500"/>
    </p>
