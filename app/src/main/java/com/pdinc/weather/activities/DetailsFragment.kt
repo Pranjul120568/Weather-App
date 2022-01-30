@@ -46,8 +46,8 @@ class DetailsFragment : Fragment() {
     private val LOCATION_REQUEST_CODE = 2
     private lateinit var rl:RelativeLayout
     private val permissions = arrayOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
     )
     private var currentLocation:Location?=null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -56,8 +56,8 @@ class DetailsFragment : Fragment() {
     private  var originalList= arrayListOf<WeatherForecast?>()
     private lateinit var locationCallback: LocationCallback
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_details, container, false)
     }
@@ -80,15 +80,13 @@ class DetailsFragment : Fragment() {
     @SuppressLint("MissingPermission")
     private fun startGPS() {
         fusedLocationClient.lastLocation
-                .addOnSuccessListener { location : Location? ->
-                    // Got last known location. In some rare situations this can be null.
-                    Log.d("Location",location!!.latitude.toString()+" "+location.longitude.toString())
-                    runBlocking{ searchForecastByGPS(location)
-                        getCurrentByGps(location)
-                    }
+            .addOnSuccessListener { location : Location? ->
+                // Got last known location. In some rare situations this can be null.
+                Log.d("Location",location!!.latitude.toString()+" "+location.longitude.toString())
+                runBlocking{ searchForecastByGPS(location)
+                    getCurrentByGps(location)
                 }
-//
-//
+            }
     }
 
     private suspend fun searchForecastByGPS(location: Location) {
@@ -105,24 +103,24 @@ class DetailsFragment : Fragment() {
         val r=searchName.getCurrentWeatherByGps(location.latitude,location.longitude)
         if(r.body()!=null){
             GlobalScope.launch (Dispatchers.IO){
-                      r.body().apply {
+                r.body().apply {
                     binding.placeTv.text = this!!.name
-                          var temp= main?.temp?.minus(273.15)!!.toInt()
+                    var temp= main?.temp?.minus(273.15)!!.toInt()
 //                          temp= String.format("%.1f",temp).toInt()
-                          val tempstr=temp.toString()+"°C"
+                    val tempstr=temp.toString()+"°C"
                     binding.tempraturemainScreenTv.text = tempstr
                     binding.humidityTv.text = this.main.humidity.toString()
                     binding.pressureTv.text = this.main.pressure.toString()
                     binding.windTv.text = this.wind!!.speed.toString()
                     val sunset = this.sys!!.sunset
                     val sunrise = this.sys.sunrise
-                          val id=this.weather!!.get(0)!!.id
-                          Log.d("TAG",id.toString())
+                    val id=this.weather!!.get(0)!!.id
+                    Log.d("TAG",id.toString())
                     changeColor(sunset!!, sunrise!!,id!!)
-                          var weatherdescription=weather[0]!!.description
-                          var c=weatherdescription!![0].toUpperCase()
-                          var descript=c+weatherdescription.substring(1)
-                          binding.descriptiontv.text=descript
+                    var weatherdescription=weather[0]!!.description
+                    var c=weatherdescription!![0].toUpperCase()
+                    var descript=c+weatherdescription.substring(1)
+                    binding.descriptiontv.text=descript
                 }
             }
         }
@@ -134,15 +132,15 @@ class DetailsFragment : Fragment() {
             shouldShowRequestPermissionRationale(permissions[0]) -> permissionExplanation()
             shouldShowRequestPermissionRationale(permissions[1]) -> permissionExplanation()
             else -> requestPermissions(
-                    permissions,
-                    LOCATION_REQUEST_CODE
+                permissions,
+                LOCATION_REQUEST_CODE
             )
         }
     }
     private fun hasPermissions(context: Context, vararg permissions: String): Boolean =
-            permissions.all {
-                ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-            }
+        permissions.all {
+            ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+        }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -159,7 +157,7 @@ class DetailsFragment : Fragment() {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
-    private fun openPermissionSetting() {
+     private fun openPermissionSetting() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri: Uri = Uri.fromParts("package", activity?.packageName, null)
         intent.data = uri
@@ -172,22 +170,22 @@ class DetailsFragment : Fragment() {
         builder.setMessage(getString(R.string.access_to_gps))
         builder.apply {
             setPositiveButton(
-                    R.string.ok
+                R.string.ok
             ) { dialog, _ ->
                 dialog.dismiss()
                 if (shouldShowRequestPermissionRationale(permissions[0]) || shouldShowRequestPermissionRationale(
-                                permissions[1]
-                        )
+                        permissions[1]
+                    )
                 )
                     requestPermissions(
-                            permissions,
-                            LOCATION_REQUEST_CODE
+                        permissions,
+                        LOCATION_REQUEST_CODE
                     )
                 else
                     openPermissionSetting()
             }
             setNegativeButton(
-                   R.string.cancel
+                R.string.cancel
             ) { dialog, _ ->
                 dialog.dismiss()
             }

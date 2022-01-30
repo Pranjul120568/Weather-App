@@ -13,11 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomnavigationview" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomnavigationview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/navigate"
         android:layout_alignParentBottom="true"
-        android:id="@+id/bottomnavigationview"/>
-
+        app:menu="@menu/navigate" />
 </RelativeLayout>
